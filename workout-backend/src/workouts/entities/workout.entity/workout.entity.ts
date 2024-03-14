@@ -1,5 +1,6 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ID, ObjectType } from "@nestjs/graphql";
 
+@ObjectType()
 export class Exercise {
     name: string;
     sets: number;
@@ -7,11 +8,12 @@ export class Exercise {
     weight: number;
 }
 
-@ObjectType()
+@ObjectType({ description: 'Workout model' })
 export class Workout {
+    @Field(() => ID, { description: 'A unique identifier' })
     id: number;
     type: string;
     date: Date;
-    @Field(() => [String]) // the graphql pluglin that was added to nest-cli.json will infer this so we do not need to enter it
+    @Field(() => [Exercise]) // the graphql pluglin that was added to nest-cli.json will infer this so we do not need to enter it // Might want to manually overriding some
     exercises: Exercise[];
 }

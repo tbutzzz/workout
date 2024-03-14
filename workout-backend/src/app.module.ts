@@ -23,6 +23,9 @@ import { WorkoutsModule } from './workouts/workouts.module';
 GraphQLModule.forRoot<ApolloDriverConfig>({
   driver: ApolloDriver,
   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+  // buildSchemaOptions: {
+  //   numberScalarMode: 'integer', // GraphQL defaults the scalar type of number to Float this will default number scalar type to Integer
+  // }
 }),
 WorkoutsModule],
   controllers: [AppController],
