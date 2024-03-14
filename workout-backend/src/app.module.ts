@@ -2,12 +2,30 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BodyMeasurementsModule } from './body-measurements/body-measurements.module';
-import { BodyMeasurementsController } from './body-measurements/body-measurements.controller';
-import { BodyMeasurementsService } from './body-measurements/body-measurements.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { Application } from 'express';
+import { join } from 'path';
+import { WorkoutsModule } from './workouts/workouts.module';
 
 @Module({
-  imports: [BodyMeasurementsModule],
-  controllers: [AppController, BodyMeasurementsController],
-  providers: [AppService, BodyMeasurementsService],
+  imports: [BodyMeasurementsModule, TypeOrmModule.forRoot({
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'postgres',
+    password: 'pass123',
+    database: 'postgres',
+    autoLoadEntities: true,
+    synchronize: true, // DO NOT USE IN PRODUCTION // This will drop all tables and recreate them for each thing marked as an entity
+  }),
+GraphQLModule.forRoot<ApolloDriverConfig>({
+  driver: ApolloDriver,
+  autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+}),
+WorkoutsModule],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

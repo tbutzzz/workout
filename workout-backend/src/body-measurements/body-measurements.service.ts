@@ -1,91 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBodyMeasurementDto } from './dto/create-body-measurement.dto';
 import { UpdateBodyMeasurementDto } from './dto/update-body-measurement.dto';
 import { NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BodyMeasurement } from './entities/body-measurement.entity';
+import { Repository } from 'typeorm';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto/pagination-query.dto';
 
 @Injectable()
 export class BodyMeasurementsService {
-    private bodyMeasurements = [
-        {
-            "id": 1,
-            "weight": 251,
-            "chest": 19,
-            "abdominal": 51,
-            "thigh": 16,
-            "date": "2024/03/06"
-        },
-        {
-            "id": 2,
-            "weight": 252,
-            "chest": 21,
-            "abdominal": 50,
-            "thigh": 17,
-            "date": "2024/03/05"
-        },
-        {
-            "id": 3,
-            "weight": 253,
-            "chest": 21,
-            "abdominal": 53,
-            "thigh": 18,
-            "date": "2024/03/04"
-        }
-    ]
+    constructor(
+        @InjectRepository(BodyMeasurement)
+        private readonly bodyMeasurementRepository: Repository<BodyMeasurement>
+    ) {}
 
-    findAll(date?: string) {
+    async findAll(date?: string, paginationQuery?: PaginationQueryDto) {
+        const { limit, offset } = paginationQuery;
         if (date) {
-            const filteredMeasurements = this.bodyMeasurements.filter(bodyMeasurement => {
-                return bodyMeasurement.date === date; 
-            });
+            const filteredMeasurements = await this.bodyMeasurementRepository.find({ where: { date: date}});
             if (filteredMeasurements.length === 0) throw new NotFoundException(`No body measurements found for date ${date}`);
 
             return filteredMeasurements;
         } else {
-            return this.bodyMeasurements;
+            return this.bodyMeasurementRepository.find({
+                skip: offset,
+                take: limit,
+            });
         }
     }
 
-    findOne(id: number) {
-        const bodyMeasurement = this.bodyMeasurements.find(bodyMeasurement => bodyMeasurement.id === id);
+    async findOne(id: number) {
+        const bodyMeasurement = await this.bodyMeasurementRepository.findOne({ where: { id: id}});
 
         if (!bodyMeasurement) throw new NotFoundException(`Body Measurement with ID ${id} not found`)
 
         return bodyMeasurement;
     }
 
-    create(createBodyMeasurementDto: CreateBodyMeasurementDto) {
-        const findHighestId = this.bodyMeasurements.reduce((acc, bodyMeasurement) => {
-            if (bodyMeasurement.id > acc) {
-                acc = bodyMeasurement.id;
-            }
-            return acc;
-        }, 0);
-        const newMeasurement = {
-            id: findHighestId + 1,
-            ...createBodyMeasurementDto
-        }
-        this.bodyMeasurements.push(newMeasurement);
-        return newMeasurement;
+    async create(createBodyMeasurementDto: CreateBodyMeasurementDto) {
+        const { date } = createBodyMeasurementDto;
+        const existingMeasurement = await this.bodyMeasurementRepository.findOne({ where: { date: date}});
+        if (existingMeasurement) throw new BadRequestException(`Body Measurement for date ${date} already exists`);
+
+        const newBodyMeasurement = this.bodyMeasurementRepository.create(createBodyMeasurementDto);
+        return await this.bodyMeasurementRepository.save(newBodyMeasurement);
     }
 
-    update(id: number, updateBodyMeasurementDto: UpdateBodyMeasurementDto) {
-        this.bodyMeasurements = this.bodyMeasurements.map(bodyMeasurement => {
-            if (bodyMeasurement.id === id) {
-                return {
-                    ...bodyMeasurement,
-                    ...updateBodyMeasurementDto
-                }
-            }
-            return bodyMeasurement;
-        });
-        return this.findOne(id);
+    async update(id: number, updateBodyMeasurementDto: UpdateBodyMeasurementDto) {
+       const updatedMeasurement = await this.bodyMeasurementRepository.preload({
+            id: id,
+            ...updateBodyMeasurementDto
+       });
+       if (!updatedMeasurement) throw new NotFoundException(`Body Measurement with ID ${id} not found`);
+       return this.bodyMeasurementRepository.save(updatedMeasurement);
     }
 
-    delete(id: number) {
-        const removedMeasurement = this.findOne(id);
-
-        this.bodyMeasurements = this.bodyMeasurements.filter(bodyMeasurement => bodyMeasurement.id !== id);
-
-        return removedMeasurement;
+    async delete(id: number) {
+        const deleteBodyMeasurement = await this.bodyMeasurementRepository.findOne({ where: { id: id}});
+        return this.bodyMeasurementRepository.remove(deleteBodyMeasurement);
     }
 }

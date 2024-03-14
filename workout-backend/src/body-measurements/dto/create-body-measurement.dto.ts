@@ -8,7 +8,10 @@ export class CreateBodyMeasurementDto {
     chest: number;
 
     @IsNumber()
-    abdominal: number; 
+    abdominal: number;
+    
+    @IsNumber()
+    age: number;
 
     @IsNumber()
     thigh: number; 
