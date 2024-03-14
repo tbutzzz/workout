@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Container } from '@mui/material';
 import { BodyMeasurements } from './body-measurements.tsx';
+import { WorkoutTrack } from './workout-track.tsx';
 
 export const HomePage: React.FC = () => {
     return (
@@ -9,6 +10,7 @@ export const HomePage: React.FC = () => {
                 Health Tracking
             </Typography>
             <BodyMeasurements />
+            <WorkoutTrack />
         </Container>
     )
 }
