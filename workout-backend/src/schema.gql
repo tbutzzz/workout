@@ -2,9 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Exercise {
+  name: String!
+  sets: Float!
+  reps: String!
+  weight: Float!
+}
+
+"""Workout model"""
 type Workout {
-  exercises: [String!]!
-  id: Float!
+  """A unique identifier"""
+  id: ID!
+  exercises: [Exercise!]!
   type: String!
   date: DateTime!
 }
@@ -16,4 +25,23 @@ scalar DateTime
 
 type Query {
   workouts: [Workout!]!
+  workout(id: ID!): Workout
+}
+
+type Mutation {
+  createWorkout(createWorkoutInput: CreateWorkoutInput!): Workout
+}
+
+input CreateWorkoutInput {
+  """List of exercises"""
+  exercises: [ExerciseInput!]!
+  type: String!
+  date: DateTime!
+}
+
+input ExerciseInput {
+  name: String!
+  sets: Float!
+  reps: String!
+  weight: Float!
 }
