@@ -30,7 +30,7 @@ export class BodyMeasurementsController {
     }
 
     @Delete(':id') // Delete /body-measurements/:id // Mutation
-    delete(@Param('id', ParseIntPipe) id: number) {
-        return this.bodyMeasurementsService.delete(id);
+    remove(@Param('id', ParseIntPipe) id: number) {
+        return this.bodyMeasurementsService.remove(id);
     }
 }

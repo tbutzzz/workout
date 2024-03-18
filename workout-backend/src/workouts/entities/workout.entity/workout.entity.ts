@@ -1,19 +1,22 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Column, Entity, JoinTable, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Exercise } from "./exercise.enitity";
 
-@ObjectType()
-export class Exercise {
-    name: string;
-    sets: number;
-    reps: string;
-    weight: number;
-}
-
+@Entity()
 @ObjectType({ description: 'Workout model' })
 export class Workout {
     @Field(() => ID, { description: 'A unique identifier' })
+    @PrimaryGeneratedColumn()
     id: number;
+
+    @Field()
+    @Column()
     type: string;
+
+    @Field()
+    @Column()
     date: Date;
-    @Field(() => [Exercise]) // the graphql pluglin that was added to nest-cli.json will infer this so we do not need to enter it // Might want to manually overriding some
+
+    @OneToMany(() => Exercise, exercise => exercise.workout, { cascade: true })
     exercises: Exercise[];
 }

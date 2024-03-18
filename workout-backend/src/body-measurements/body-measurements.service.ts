@@ -55,8 +55,8 @@ export class BodyMeasurementsService {
        return this.bodyMeasurementRepository.save(updatedMeasurement);
     }
 
-    async delete(id: number) {
-        const deleteBodyMeasurement = await this.bodyMeasurementRepository.findOne({ where: { id: id}});
-        return this.bodyMeasurementRepository.remove(deleteBodyMeasurement);
+    async remove(id: number) {
+        const removeBodyMeasurement = await this.bodyMeasurementRepository.findOne({ where: { id: id}});
+        return this.bodyMeasurementRepository.remove(removeBodyMeasurement);
     }
 }

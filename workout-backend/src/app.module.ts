@@ -10,7 +10,7 @@ import { join } from 'path';
 import { WorkoutsModule } from './workouts/workouts.module';
 
 @Module({
-  imports: [BodyMeasurementsModule, TypeOrmModule.forRoot({
+  imports: [BodyMeasurementsModule, WorkoutsModule, TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
     port: 5432,

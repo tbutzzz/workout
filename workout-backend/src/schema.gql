@@ -3,6 +3,8 @@
 # ------------------------------------------------------
 
 type Exercise {
+  """A unique identifier"""
+  id: ID!
   name: String!
   sets: Float!
   reps: String!
@@ -13,9 +15,9 @@ type Exercise {
 type Workout {
   """A unique identifier"""
   id: ID!
-  exercises: [Exercise!]!
   type: String!
   date: DateTime!
+  exercises: [Exercise!]!
 }
 
 """
@@ -25,18 +27,21 @@ scalar DateTime
 
 type Query {
   workouts: [Workout!]!
-  workout(id: ID!): Workout
+  workout(id: ID!): Workout!
 }
 
 type Mutation {
-  createWorkout(createWorkoutInput: CreateWorkoutInput!): Workout
+  createWorkout(createWorkoutInput: CreateWorkoutInput!): Workout!
+  updateWorkout(id: Float!, updateWorkoutInput: UpdateWorkoutInput!): Workout!
+  removeWorkout(id: Float!): Workout!
 }
 
 input CreateWorkoutInput {
-  """List of exercises"""
-  exercises: [ExerciseInput!]!
   type: String!
   date: DateTime!
+
+  """List of exercises"""
+  exercises: [ExerciseInput!]!
 }
 
 input ExerciseInput {
@@ -44,4 +49,12 @@ input ExerciseInput {
   sets: Float!
   reps: String!
   weight: Float!
+}
+
+input UpdateWorkoutInput {
+  type: String
+  date: DateTime
+
+  """List of exercises"""
+  exercises: [ExerciseInput!]
 }
