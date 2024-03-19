@@ -1,5 +1,6 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { IsDate } from "class-validator";
+import { WorkoutType } from "src/common/enums/workout-type.enum";
 
 @InputType()
 export class ExerciseInput {
@@ -19,11 +20,10 @@ export class ExerciseInput {
 @InputType()
 export class CreateWorkoutInput {
     @Field()
-    type: string;
+    type: WorkoutType;
 
     @Field()
-    @IsDate()
-    date: Date;
+    date: string;
 
     @Field(() => [ExerciseInput], { description: 'List of exercises' })
     exercises: ExerciseInput[];

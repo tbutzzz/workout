@@ -1,6 +1,8 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, JoinTable, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Exercise } from "./exercise.enitity";
+import { WorkoutType } from "src/common/enums/workout-type.enum";
+import { loggerMiddleware } from "src/common/middleware/logger.middleware";
 
 @Entity()
 @ObjectType({ description: 'Workout model' })
@@ -9,9 +11,9 @@ export class Workout {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field()
+    @Field({ middleware: [loggerMiddleware] })
     @Column()
-    type: string;
+    type: WorkoutType;
 
     @Field()
     @Column()
@@ -19,4 +21,7 @@ export class Workout {
 
     @OneToMany(() => Exercise, exercise => exercise.workout, { cascade: true })
     exercises: Exercise[];
+
+    @CreateDateColumn()
+    createdAt?: Date;
 }
