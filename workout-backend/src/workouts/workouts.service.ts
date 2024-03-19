@@ -6,6 +6,7 @@ import { Repository, ReturnDocument } from 'typeorm';
 import { UserInputError } from '@nestjs/apollo';
 import { Exercise } from './entities/workout.entity/exercise.enitity';
 import { UpdateWorkoutInput } from './dto/update-workout.input/update-workout.input';
+import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
 export class WorkoutsService {
@@ -14,7 +15,8 @@ export class WorkoutsService {
         private readonly workoutsRepository: Repository<Workout>,
         @InjectRepository(Exercise)
         private readonly exercisesRepositry: Repository<Exercise>,
-    ) { }
+        private readonly pubSub: PubSub,
+    ) {}
 
     async findAll() {
         return this.workoutsRepository.find({ relations: ['exercises'] });

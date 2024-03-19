@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { WorkoutsService } from './workouts.service';
 import { Exercise } from './entities/workout.entity/exercise.enitity';
 import { WorkoutExercisesResolver } from './workout-exercises.resolver';
+import { PubSubModule } from 'src/pub-sub/pub-sub.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Workout, Exercise])], // Registers the workout entity (or repo) so that TypeOrm can manage it
+  imports: [TypeOrmModule.forFeature([Workout, Exercise]), PubSubModule], // Registers the workout entity (or repo) so that TypeOrm can manage it
   providers: [WorkoutsResolver, WorkoutsService, WorkoutExercisesResolver] // and registers the repo (can now perform db ops) -> can also now inject this into services/resolvers
 })
 export class WorkoutsModule {}

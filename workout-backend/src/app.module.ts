@@ -8,6 +8,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Application } from 'express';
 import { join } from 'path';
 import { WorkoutsModule } from './workouts/workouts.module';
+import { DateScalar } from './common/scalars/date.scalar/date.scalar';
+import { PubSubModule } from './pub-sub/pub-sub.module';
 
 @Module({
   imports: [BodyMeasurementsModule, WorkoutsModule, TypeOrmModule.forRoot({
@@ -23,12 +25,15 @@ import { WorkoutsModule } from './workouts/workouts.module';
 GraphQLModule.forRoot<ApolloDriverConfig>({
   driver: ApolloDriver,
   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+  installSubscriptionHandlers: true, // Add a websocket connection
   // buildSchemaOptions: {
-  //   numberScalarMode: 'integer', // GraphQL defaults the scalar type of number to Float this will default number scalar type to Integer
+    // dateScalarMode: 'timestamp',
+    // numberScalarMode: 'integer', // GraphQL defaults the scalar type of number to Float this will default number scalar type to Integer
   // }
 }),
-WorkoutsModule],
+WorkoutsModule,
+PubSubModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DateScalar],
 })
 export class AppModule {}
