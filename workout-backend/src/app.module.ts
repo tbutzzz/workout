@@ -21,6 +21,7 @@ import { PubSubModule } from './pub-sub/pub-sub.module';
     database: 'postgres',
     autoLoadEntities: true,
     synchronize: true, // DO NOT USE IN PRODUCTION // This will drop all tables and recreate them for each thing marked as an entity
+    logging: ['query'],
   }),
 GraphQLModule.forRoot<ApolloDriverConfig>({
   driver: ApolloDriver,

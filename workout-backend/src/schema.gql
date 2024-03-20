@@ -19,6 +19,7 @@ type Workout {
   date: Date!
   exercises: [Exercise!]!
   createdAt: Date
+  getExercisesOfWorkout: [Exercise!]!
 }
 
 enum WorkoutType {
