@@ -3,21 +3,16 @@ import { Workout } from './entities/workout.entity/workout.entity';
 import { Exercise } from './entities/workout.entity/exercise.enitity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ExercisesByWorkoutLoader } from './data-loader/exercises-by-workout.loader/exercises-by-workout.loader';
 
 @Resolver(() => Workout)
 export class WorkoutExercisesResolver {
     constructor(
-        @InjectRepository(Exercise)
-        private readonly exercisesRepository: Repository<Exercise>,
+       private readonly exercisesByWorkout: ExercisesByWorkoutLoader,
     ) {}
-    @ResolveField('exercises', () => [Exercise])
-    async getExercisesOfWorkout(@Parent() workout: Workout) {
-        return this.exercisesRepository
-        .createQueryBuilder('exercise')
-        .innerJoin('exercise.workout', 'workout', 'workout.id = :workoutId', {
-            workoutId: workout.id,
-        })
-        .getMany()
+    @ResolveField(() => [Exercise])
+    async getExercisesOfWorkout(@Parent() workout: Workout): Promise<Exercise[]> {
+       return this.exercisesByWorkout.load(workout.id);
     }
 
 }
