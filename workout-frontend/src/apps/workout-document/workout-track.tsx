@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Typography, Container, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Card, CardContent, Grid, Button } from "@mui/material";
 import { Workout, Lift, workouts } from "./workout-data.ts";
+import { useDataContext } from "./data-context.tsx";
+
+interface WorkoutProps {
+    data: any;
+    isLoading: any;
+    isError: any;
+}
 
 export const WorkoutTrack: React.FC = () => {
     const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);

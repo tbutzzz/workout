@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import { Typography, Container, TextField, Button, Grid } from '@mui/material';
+import { useDataContext } from "./data-context.tsx";
+
+interface BodyMeasurementProps {
+    data: any;
+    isLoading: any;
+    isError: any;
+}
 
 export const BodyMeasurements: React.FC = () => {
     const currentDate = new Date();
